@@ -64,11 +64,17 @@ bool File::Seek(off_t pos) {
     errno = EBADF;
     return false;
   }
+/*
+   1. lseek also check overflow of pos.
+   2. std::numeric_limits<long>::max() is for 32-bit,
+      but -D_FILE_OFFSET_BITS=64 defines in Android.mk
+
   // fseek() uses a long value for the offset which could be smaller than off_t.
   if (pos > std::numeric_limits<long>::max()) {
     errno = EOVERFLOW;
     return false;
   }
+*/
   off_t newpos = lseek(fd_, pos, SEEK_SET);
   if (newpos < 0)
     return false;
